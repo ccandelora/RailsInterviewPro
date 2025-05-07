@@ -24,8 +24,15 @@ export default function Home() {
   const [questionsWithPrefs, setQuestionsWithPrefs] = useState<QuestionWithUserPrefs[]>([]);
   
   // Fetch questions
-  const { data: questions, isLoading, error } = useQuery({
-    queryKey: ["/api/questions"],
+  const { data: questions, isLoading, error, refetch } = useQuery<Question[]>({
+    queryKey: ["/api/questions", activeDifficulty],
+    queryFn: async () => {
+      const url = activeDifficulty === "all" 
+        ? "/api/questions" 
+        : `/api/questions?difficulty=${activeDifficulty}`;
+      const response = await apiRequest("get", url);
+      return response.json() as Promise<Question[]>;
+    }
   });
   
   // When questions data is loaded, initialize questions with preferences

@@ -14,22 +14,27 @@ export const categories = [
   "Frontend",
   "Security",
   "Performance",
+  "Modern Rails",
+  "Testing",
+  "API",
+  "Routing",
+  "Deployment"
 ];
 
 export const difficulties = [
   { value: "all", label: "All Difficulties" },
-  { value: "beginner", label: "Beginner", badge: "Easy" },
-  { value: "intermediate", label: "Intermediate", badge: "Medium" },
-  { value: "advanced", label: "Advanced", badge: "Hard" },
+  { value: "easy", label: "Beginner", badge: "Easy" },
+  { value: "medium", label: "Intermediate", badge: "Medium" },
+  { value: "hard", label: "Advanced", badge: "Hard" },
 ];
 
 export const getDifficultyColor = (difficulty: string) => {
   switch (difficulty) {
-    case "beginner":
+    case "easy":
       return "bg-green-100 text-green-800";
-    case "intermediate":
+    case "medium":
       return "bg-yellow-100 text-yellow-800";
-    case "advanced":
+    case "hard":
       return "bg-red-100 text-red-800";
     default:
       return "bg-gray-100 text-gray-800";
@@ -38,11 +43,11 @@ export const getDifficultyColor = (difficulty: string) => {
 
 export const getDifficultyLabel = (difficulty: string) => {
   switch (difficulty) {
-    case "beginner":
+    case "easy":
       return "Easy";
-    case "intermediate":
+    case "medium":
       return "Medium";
-    case "advanced":
+    case "hard":
       return "Hard";
     default:
       return difficulty;

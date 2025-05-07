@@ -59,7 +59,8 @@ app.use((req, res, next) => {
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000;
+  // Since port 5000 is currently in use, using port 5001 for development
+  const port = 5001;
   server.listen({
     port,
     host: "0.0.0.0",

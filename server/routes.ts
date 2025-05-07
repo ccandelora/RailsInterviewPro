@@ -5,10 +5,40 @@ import { insertUserPreferenceSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // API route to get all questions
+  // API route to get all questions with optional filtering
   app.get("/api/questions", async (req, res) => {
     try {
-      const questions = await storage.getAllQuestions();
+      const { difficulty } = req.query;
+      const difficultySafe = difficulty && typeof difficulty === 'string' ? difficulty.toLowerCase() : null;
+      console.log(`[API] Request received for difficulty: "${difficultySafe}"`);
+      
+      let questions;
+      if (difficultySafe && ['easy', 'medium', 'hard'].includes(difficultySafe)) {
+        console.log(`[API] Fetching questions with difficulty: ${difficultySafe}`);
+        questions = await storage.getQuestionsByDifficulty(difficultySafe);
+        
+        // Double check if filtering worked
+        const counts = {
+          easy: 0,
+          medium: 0,
+          hard: 0
+        };
+        
+        questions.forEach(q => {
+          const diff = q.difficulty.toLowerCase();
+          if (diff === 'easy') counts.easy++;
+          if (diff === 'medium') counts.medium++;
+          if (diff === 'hard') counts.hard++;
+        });
+        
+        console.log(`[API] Response counts by difficulty: easy=${counts.easy}, medium=${counts.medium}, hard=${counts.hard}`);
+        console.log(`[API] Expected all results to have difficulty=${difficultySafe}`);
+      } else {
+        console.log('[API] Getting all questions (no valid difficulty filter)');
+        questions = await storage.getAllQuestions();
+      }
+      
+      console.log(`[API] Sending ${questions.length} questions in response`);
       res.json(questions);
     } catch (error) {
       console.error("Error fetching questions:", error);
